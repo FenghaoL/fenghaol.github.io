@@ -49,6 +49,16 @@ nav_order: 2
 </style>
 
 <div class="project-showcase">
+  <a class="project-card" href="{{ '/projects/wam-so101-insertion/' | relative_url }}">
+    <video muted playsinline preload="metadata" poster="{{ '/assets/img/projects/wam-cover.jpg' | relative_url }}">
+      <source src="{{ '/assets/video/wam-so101/cylinder-preview.mp4' | relative_url }}" type="video/mp4">
+    </video>
+    <div class="project-card-body">
+      <h2>WAM Precision Manipulation on SO101</h2>
+      <p>Dual-camera robot control for cylinder and power-adapter insertion, with recovery learned from human corrections.</p>
+    </div>
+  </a>
+
   <a class="project-card" href="{{ '/projects/g05-so101-alignment/' | relative_url }}">
     <video muted playsinline preload="metadata" poster="{{ '/assets/img/projects/g05-cover.jpg' | relative_url }}">
       <source src="{{ '/assets/video/g0.5_sft_dpo/base_4epoch_sft/put-white-block-on-pink-bowl-19s.mp4' | relative_url }}" type="video/mp4">

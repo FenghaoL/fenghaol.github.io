@@ -1,0 +1,142 @@
+{
+  "format": "ahawam_so101_experiment/v1",
+  "started_utc": "2026-09-15T01:32:32.180152Z",
+  "origin_wall_time_ns": 1789435952180151700,
+  "origin_perf_counter_ns": 373389299188300,
+  "clock": {
+    "event_order": "sequence",
+    "causal_time": "perf_counter_ns",
+    "civil_time": "wall_time_ns and utc",
+    "camera_timestamp": "Host observation window; OpenCVCamera.async_read does not expose a hardware capture timestamp."
+  },
+  "video_fps": 15.0,
+  "host": {
+    "hostname": "DESKTOP-H36BUAH",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "python": "3.10.20"
+  },
+  "metadata": {
+    "purpose": "success_rate_evaluation",
+    "trial_id": "20260915T013232.180151Z__padapter_v2_sft",
+    "condition": "init_0001",
+    "task_label": "power_adapter",
+    "model_label": "padapter_v2_sft",
+    "local_policy_port": 12000,
+    "server_health": {
+      "ok": true,
+      "type": "health",
+      "video_preview_enabled": false,
+      "protocol": "length_prefixed_pickle_tcp",
+      "protocol_version": 1,
+      "policy": "AHAWAMPolicy",
+      "model_variant": "ahawam",
+      "action_dim": 6,
+      "proprio_dim": 6,
+      "action_chunk_size": 8,
+      "action_horizon": 40,
+      "num_action_chunks_per_planner_refresh": 5,
+      "model_image_shape_hwc": [
+        384,
+        320,
+        3
+      ],
+      "accepted_image_keys": [
+        [
+          "front"
+        ],
+        [
+          "fixed",
+          "wrist"
+        ],
+        [
+          "cam_high",
+          "cam_left_wrist",
+          "cam_right_wrist"
+        ]
+      ],
+      "text_mode": "cached",
+      "preview_num_frames": 13,
+      "preview_fps": 3.75
+    },
+    "task": "Remove the power adapter from the holder and plug it into the power strip.",
+    "arguments": {
+      "host": "127.0.0.1",
+      "port": 12000,
+      "task": "Pick up the cylinder and insert it into the matching hole.",
+      "mode": "action",
+      "robot_port": "COM4",
+      "robot_id": "fenghao_so101_follower",
+      "fixed_camera": 2,
+      "wrist_camera": 1,
+      "width": 640,
+      "height": 480,
+      "fixed_crop_left_px": 0,
+      "fixed_crop_top_px": 0,
+      "fixed_crop_right_px": 640,
+      "fixed_crop_bottom_px": 480,
+      "wrist_crop_left_px": 0,
+      "wrist_crop_top_px": 0,
+      "wrist_crop_right_px": 640,
+      "wrist_crop_bottom_px": 480,
+      "image_transport": "front",
+      "camera_fps": 30,
+      "fixed_auto_exposure": 0.25,
+      "wrist_auto_exposure": 0.25,
+      "fixed_exposure": -6.0,
+      "wrist_exposure": -5.0,
+      "action_fps": 15.0,
+      "expected_chunk_size": 8,
+      "expected_action_horizon": 40,
+      "max_step": 10.0,
+      "joint_limit_margin": 0.0,
+      "home_arm": [
+        3.73,
+        -67.68,
+        56.64,
+        73.28,
+        -2.0,
+        24.06
+      ],
+      "home_on_startup": false,
+      "home_ignore_gripper": false,
+      "home_timeout_s": 15.0,
+      "home_tolerance": 2.0,
+      "home_step": 5.0,
+      "home_step_interval_s": 0.02,
+      "max_chunks": 0,
+      "timeout_s": 120.0,
+      "dashboard_fps": 10.0,
+      "dashboard_camera_fps": 8.0,
+      "dashboard_history": 50,
+      "camera_panel_width": 480,
+      "camera_panel_height": 360,
+      "alignment_reference_dataset": null,
+      "alignment_reference_episode": 0,
+      "alignment_reference_frame": 0,
+      "alignment_overlay_opacity": 0.5,
+      "preview_output_dir": "outputs/ahawam_previews",
+      "timing_log": null,
+      "diagnostic_output_dir": null,
+      "diagnostic_video_fps": 15.0,
+      "diagnostic_telemetry_fps": 0.0,
+      "diagnostic_queue_size": 128,
+      "diagnostic_auto_analyze": false,
+      "print_server_responses": false,
+      "dry_run": false
+    },
+    "action_semantics": "absolute calibrated-degree target; max-step clipped, as in run client",
+    "dry_run": false
+  },
+  "ended_utc": "2026-09-15T01:33:03.022518Z",
+  "ended_wall_time_ns": 1789435983022517600,
+  "duration_s": 30.8423674,
+  "event_count": 507,
+  "video_frame_count": 280,
+  "video_files": {
+    "fixed": "fixed.mp4",
+    "wrist": "wrist.mp4",
+    "model_view": "model_view.mp4"
+  },
+  "server_input_image_count": 23,
+  "server_input_image_directory": "server_inputs"
+}

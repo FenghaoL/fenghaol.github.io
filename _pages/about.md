@@ -83,11 +83,23 @@ I work on robot learning systems that connect large vision-language-action model
 
 I am especially interested in practical embodied AI: data pipelines, action representations, policy evaluation, and the engineering details that make robot demos reproducible rather than lucky. I also have research experience in neural rendering and 3D reconstruction from sparse sonar data.
 
-A concise summary of my experience is available in my [CV](/assets/pdf/FenghaoLiu_CV.pdf).
+A concise summary of my experience is available in my [CV]({{ '/assets/pdf/CV_FenghaoLiu.pdf' | relative_url }}).
 
 <h2 class="home-section-title">Selected Projects</h2>
 
 <div class="home-projects">
+  <div class="home-project-card">
+    <a href="{{ '/projects/wam-so101-insertion/' | relative_url }}">
+      <video muted playsinline preload="metadata" poster="{{ '/assets/img/projects/wam-cover.jpg' | relative_url }}">
+        <source src="{{ '/assets/video/wam-so101/cylinder-preview.mp4' | relative_url }}" type="video/mp4">
+      </video>
+    </a>
+    <div class="home-project-card-body">
+      <h2><a href="{{ '/projects/wam-so101-insertion/' | relative_url }}">WAM Precision Manipulation on SO101</a></h2>
+      <p>Dual-camera robot control for cylinder and power-adapter insertion, with recovery learned from human corrections.</p>
+    </div>
+  </div>
+
   <div class="home-project-card">
     <a href="{{ '/projects/g05-so101-alignment/' | relative_url }}">
       <video muted playsinline preload="metadata" poster="{{ '/assets/img/projects/g05-cover.jpg' | relative_url }}">

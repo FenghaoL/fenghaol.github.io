@@ -1,0 +1,17 @@
+{
+  "format": "ahawam_eval_result/v1",
+  "trial_id": "20260914T022604.799736Z__cylinder_v1_sft",
+  "condition": "init_0003",
+  "task_label": "cylinder",
+  "model_label": "cylinder_v1_sft",
+  "outcome": "failure",
+  "reason": "",
+  "local_policy_port": 12002,
+  "task": "Pick up the cylinder and insert it into the matching hole.",
+  "dry_run": false,
+  "started_wall_time_ns": 1789352764940361000,
+  "ended_wall_time_ns": 1789352797129555100,
+  "paused_total_s": 0.0,
+  "completed_chunks": 24,
+  "action_ticks": 199
+}
