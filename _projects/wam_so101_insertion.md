@@ -29,19 +29,14 @@ permalink: /projects/wam-so101-insertion/
     line-height: 1.45;
   }
 
-  .wam-stats,
-  .wam-flow {
+  .wam-stats {
     display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 0.75rem;
     margin: 1.2rem 0;
   }
 
-  .wam-stats {
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  }
-
-  .wam-stats > div,
-  .wam-flow > div {
+  .wam-stats > div {
     border: 1px solid var(--global-divider-color);
     border-radius: 8px;
     padding: 0.9rem;
@@ -52,42 +47,55 @@ permalink: /projects/wam-so101-insertion/
     font-size: 1.35rem;
   }
 
-  .wam-flow {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+  .wam-figure {
+    margin: 1.5rem 0 1.8rem;
   }
 
-  .wam-flow strong,
-  .wam-flow span {
+  .wam-figure a {
     display: block;
+    border: 1px solid var(--global-divider-color);
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
   }
 
-  .wam-flow strong {
-    margin-bottom: 0.5rem;
-    color: var(--global-theme-color);
+  .wam-figure img {
+    display: block;
+    width: 100%;
+    height: auto;
   }
 
-  .wam-flow span {
-    font-size: 0.9rem;
+  .wam-figure figcaption {
+    margin-top: 0.6rem;
+    color: var(--global-text-color-light);
+    font-size: 0.88rem;
     line-height: 1.5;
   }
 
-  .wam-loop {
-    padding: 0.7rem 1rem;
-    border-left: 3px solid var(--global-theme-color);
-    background: var(--global-code-bg-color);
-    font-size: 0.9rem;
+  .wam-equation {
+    margin: 1.2rem 0;
+    padding: 0.35rem 0.75rem;
+    overflow-x: auto;
+    border-left: 2px solid var(--global-divider-color);
+  }
+
+  .wam-results {
+    width: 100%;
+    margin: 1.1rem 0 0.5rem;
+    font-size: 0.92rem;
+  }
+
+  .wam-results th,
+  .wam-results td {
+    padding: 0.65rem 0.4rem;
+    border-bottom: 1px solid var(--global-divider-color);
+    text-align: left;
   }
 
   .wam-comparison summary {
     cursor: pointer;
     color: var(--global-theme-color);
     margin: 0.8rem 0;
-  }
-
-  @media (max-width: 640px) {
-    .wam-flow {
-      grid-template-columns: 1fr;
-    }
   }
 </style>
 
@@ -109,32 +117,51 @@ The two tasks are cylinder insertion and power-adapter insertion. Both require m
   <div><strong>231 interventions</strong>Human correction segments</div>
 </div>
 
-## From Observations to Robot Actions
+## System Overview
 
-AHA-WAM combines a video model with an action model. The video branch provides visual context for predicting short action sequences, while recent observations supply memory of how the robot reached its current state.
+AHA-WAM combines a video model with an action model. I adapted this backbone to the SO101 and built the surrounding data collection, training, and deployment pipeline. The figure below shows how demonstrations and human corrections feed back into a policy that runs on the physical robot.
 
-<div class="wam-flow" role="group" aria-label="Closed-loop deployment pipeline, steps one through four">
-  <div><strong>01 · Observe →</strong><span>Fixed + wrist images<br>Joint state<br>Task instruction</span></div>
-  <div><strong>02 · Add context →</strong><span>Recent visual history<br>Video-model features</span></div>
-  <div><strong>03 · Predict actions →</strong><span>Action model generates a short sequence of joint targets.</span></div>
-  <div><strong>04 · Execute ↻</strong><span>SO101 executes an action chunk, then receives fresh camera observations.</span></div>
-</div>
-<div class="wam-loop">↻ New observations return to step 01, keeping the policy in a closed loop with the physical robot.</div>
+<figure class="wam-figure">
+  <a href="{{ '/assets/img/projects/wam-interactive-learning.jpg' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the interactive learning framework at full resolution">
+    <img src="{{ '/assets/img/projects/wam-interactive-learning.jpg' | relative_url }}" width="1644" height="850" loading="lazy" alt="Real-robot learning pipeline: dual-camera demonstrations train a video–action model; robot rollouts and human takeovers supply correction data for further training.">
+  </a>
+  <figcaption>Demonstrate, deploy, correct, and retrain. The video model provides visual features to the action model, while human interventions add examples of how to recover. Click the figure to enlarge.</figcaption>
+</figure>
 
-My implementation covers the multi-camera input pipeline, robot state and action interfaces, action chunking, and persistent visual memory for real-robot inference.
+**On the robot**, fixed and wrist cameras provide complementary views of the object and insertion opening. The policy combines these images with joint state, a task instruction, and recent visual history to predict short action sequences. After executing a chunk, it receives fresh observations and continues in a closed loop.
+
+**My implementation** connects the multi-camera input pipeline, calibrated joint-state and action interfaces, action chunking, and persistent visual memory. It also records policy execution and operator takeovers in a shared timeline for training and evaluation.
 
 ## Learning from Human Corrections
 
-Demonstrations teach the basic task, but a deployed policy also encounters missed grasps and misaligned approaches. I built a takeover-and-handback workflow: an operator briefly corrects the robot, then lets the policy resume.
+Demonstrations teach the basic task, but deployment exposes missed grasps and misaligned approaches. I built a takeover-and-handback workflow: an operator briefly corrects the robot, then lets the policy resume. The key training decision is to distinguish **what the robot observed** from **which actions it should imitate**.
 
-<div class="wam-flow" role="group" aria-label="Training workflow, steps one through four">
-  <div><strong>01 · Demonstrate →</strong><span>Fine-tune the pretrained policy on teleoperated task demonstrations.</span></div>
-  <div><strong>02 · Deploy & correct →</strong><span>Run the policy and record human takeovers when it needs help.</span></div>
-  <div><strong>03 · Prepare data →</strong><span>Keep human action labels separate from the surrounding visual observations.</span></div>
-  <div><strong>04 · Train & evaluate</strong><span>Mix corrections with original demonstrations, update the model, and test unassisted execution.</span></div>
+<figure class="wam-figure">
+  <a href="{{ '/assets/pdf/wam-method-overview.pdf' | relative_url }}" target="_blank" rel="noopener" aria-label="Open the temporal supervision diagram as a vector PDF">
+    <img src="{{ '/assets/img/projects/wam-method-overview.png' | relative_url }}" width="2055" height="815" loading="lazy" alt="Correction timeline: past observations provide memory, only human-controlled actions provide correction labels, and eligible recorded future frames provide video targets. Video and action branches are jointly trained, then evaluated through video fidelity and robot task success.">
+  </a>
+  <figcaption>One intervention provides three kinds of information: past visual context, human action labels, and an observed visual continuation. The action labels stay within human control even when the visual context extends beyond it. Click for the vector PDF.</figcaption>
+</figure>
+
+The model retains its joint action–video training objective. For a minibatch $B$, the loss is:
+
+<div class="wam-equation" markdown="1">
+
+$$
+\mathcal{L}(B)
+=
+\frac{1}{|B|}\sum_{i\in B}\ell_i^{\mathrm{action}}
++
+\lambda_v
+\frac{\sum_{i\in B}m_i^v\,\ell_i^{\mathrm{video}}}
+{\max\!\left(1,\sum_{i\in B}m_i^v\right)}.
+$$
+
 </div>
 
-Only human-controlled actions serve as correction labels. Recorded images around those corrections provide temporal context and eligible video-prediction targets. Training mixes original demonstrations and correction samples equally, so the policy practices recovery alongside the original skill.
+Here, $\ell_i^{\mathrm{action}}$ supervises valid actions—**human-controlled actions only** for correction samples. The mask $m_i^v$ includes a video target only when a complete eligible continuation is available; $\lambda_v$ balances the two losses. Both branches use flow matching. In practice, this lets short interventions teach corrective motion while surrounding images supply temporal context.
+
+I mix original demonstrations and correction samples at a **1:1 sampling ratio**, updating the video and action branches together. This retains practice on the original skill while adding recovery behavior.
 
 ## Real-Robot Demos
 
@@ -163,6 +190,19 @@ The successful rollouts above show the policy after corrective training. Expand 
   </figure>
 </details>
 
-## What I Learned
+## Evaluation and Takeaways
 
-Human corrections improved task completion on both insertion tasks in controlled evaluations. The useful amount of visual history and future-video supervision differed by task, and better video predictions did not always translate into better physical execution. I evaluated the model through real-robot completion as well as video prediction, with particular attention to behavior after an unsuccessful approach.
+Controlled, unassisted evaluations showed higher task completion after corrective training:
+
+<table class="wam-results">
+  <thead>
+    <tr><th scope="col">Task</th><th scope="col">Demonstration only</th><th scope="col">Best corrected policy</th></tr>
+  </thead>
+  <tbody>
+    <tr><th scope="row">Cylinder insertion</th><td>1 / 13 · 7.7%</td><td><strong>6 / 13 · 46.2%</strong></td></tr>
+    <tr><th scope="row">Power-adapter insertion</th><td>10 / 20 · 50.0%</td><td><strong>15 / 20 · 75.0%</strong></td></tr>
+  </tbody>
+</table>
+<p class="wam-note">Best results come from different correction configurations: extended history and future video for the cylinder, and intervention-local context for the adapter. Counts reflect a small evaluation set with one training seed per configuration; the selected demo videos above do not necessarily show the best-scoring checkpoint.</p>
+
+**The main lesson:** better video prediction does not automatically mean better physical control. Temporal context helped differently across the two tasks, so I evaluated both held-out video predictions and actual robot completion. The project brought together model adaptation, human-in-the-loop data collection, and real-robot evaluation in one working system.
